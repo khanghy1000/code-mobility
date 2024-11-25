@@ -1,0 +1,51 @@
+<!doctype html>
+<html data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Server</title>
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+        />
+
+        <link href="./assets/main.css" type="text/css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div id="app" class="p-3">
+            <div class="columns">
+                <div class="column is-flex is-flex-direction-column">
+                    <div class="block flex-0">
+                        <button class="button is-primary" id="btn-start">
+                            Start
+                        </button>
+                        <button
+                            class="button is-primary is-light is-hidden"
+                            id="btn-stop"
+                        >
+                            Stop
+                        </button>
+                    </div>
+                    <div id="ip-list" class="box block is-hidden flex-0"></div>
+                    <div class="block box overflow-y-auto flex-1" id="log">
+                        <strong>Log</strong>
+                    </div>
+                </div>
+
+                <div class="column is-flex is-flex-direction-column">
+                    <div class="block flex-0">
+                        <button class="button is-light" id="btn-refresh">
+                            Refresh
+                        </button>
+                    </div>
+                    <div
+                        class="block table-container box flex-1 overflow-y-auto"
+                        id="data"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="module" src="./src/renderer.js"></script>
+</html>

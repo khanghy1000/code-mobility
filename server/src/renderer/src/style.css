@@ -1,0 +1,29 @@
+html,
+body,
+.columns,
+.column,
+#app {
+    max-height: 100vh;
+    max-height: 100svh;
+    height: 100%;
+}
+
+html {
+    overflow: auto;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.flex-1 {
+    flex: 1 1 auto;
+}
+
+.flex-0 {
+    flex: 0 0 auto;
+}
