@@ -37,8 +37,8 @@ app.get('/ping', (_req, res) => {
     res.json({ message: 'pong' });
 });
 
-app.post('/cmd', (req, res) => {
-    const result = new Function(req.body.cmd)();
+app.post('/cmd', async (req, res) => {
+    const result = await eval('(async function() {' + req.body.cmd + '}())');
 
     BrowserWindow.getAllWindows()[0].webContents.send('data:refresh');
 
