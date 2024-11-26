@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite App</title>
+    </head>
+    <body>
+        <div id="app" class="p-3">
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label">Server</label>
+                        <div class="control">
+                            <input
+                                class="input"
+                                type="text"
+                                placeholder="192.168.10.121"
+                                id="server"
+                            />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Port</label>
+                        <div class="control">
+                            <input
+                                class="input"
+                                type="text"
+                                placeholder="3000"
+                                id="port"
+                            />
+                        </div>
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" id="btn-connect">
+                            Connect
+                        </button>
+                    </div>
+
+                    <div id="error" class="has-text-danger"></div>
+
+                    <hr class="is-hidden" />
+
+                    <div class="field is-hidden">
+                        <label class="label">Data</label>
+                        <div class="control">
+                            <input
+                                class="input"
+                                type="text"
+                                placeholder="Data"
+                                id="input-data"
+                            />
+                        </div>
+                    </div>
+                    <div class="control is-hidden">
+                        <button class="button is-link" id="btn-add">Add</button>
+                    </div>
+                </div>
+
+                <div class="column is-flex is-flex-direction-column">
+                    <div class="block flex-0 is-hidden">
+                        <button class="button is-light" id="btn-refresh">
+                            Refresh
+                        </button>
+                    </div>
+                    <div
+                        class="block table-container box flex-1 overflow-y-auto is-hidden"
+                        id="data"
+                    ></div>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="/main.js"></script>
+    </body>
+</html>
