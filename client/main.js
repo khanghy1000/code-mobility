@@ -13,6 +13,35 @@ const btnAdd = document.getElementById('btn-add');
 let serverIp;
 let serverPort;
 
+function toast(message, isError = false) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: 'top',
+        position: 'right',
+        style: {
+            background: isError ? 'red' : 'green',
+        },
+    }).showToast();
+}
+
+function addScripts() {
+    if (!serverIp || !serverPort) {
+        return;
+    }
+
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = `http://${serverIp}:${serverPort}/toastify.min.css`;
+
+    const script = document.createElement('script');
+    script.src = `http://${serverIp}:${serverPort}/toastify.js`;
+
+    document.head.appendChild(css);
+    document.head.appendChild(script);
+}
+
 async function connect() {
     btnConnect.classList.add('is-loading');
     errorMessage.innerHTML = '';
@@ -44,6 +73,8 @@ async function connect() {
         inputPort.readOnly = true;
 
         await getData();
+
+        addScripts();
     } catch (error) {
         errorMessage.innerHTML = `<strong class='has-text-danger'>Error: </strong><p>${error.message}</p>`;
         console.log(error);
@@ -57,20 +88,37 @@ btnConnect.addEventListener('click', connect);
 function addDeleteEventListener() {
     document.querySelectorAll('.btn-delete[data-id]').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
-            console.log('test');
+            btn.classList.add('is-loading');
             const id = e.target.getAttribute('data-id');
-            await fetch(`http://${serverIp}:${serverPort}/cmd`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    cmd: `
-                await db('data').where('id', ${id}).delete();
-            `,
-                }),
-            });
-            await getData();
+
+            try {
+                const res = await fetch(
+                    `http://${serverIp}:${serverPort}/cmd`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            cmd: `
+                                await db('data').where('id', ${id}).delete();
+                            `,
+                        }),
+                    }
+                );
+
+                if (!res.ok) {
+                    throw new Error('Error deleting data');
+                }
+
+                await getData();
+
+                toast(`Deleted id: ${id}`);
+            } catch (error) {
+                toast(error.message, true);
+            } finally {
+                btn.classList.remove('is-loading');
+            }
         });
     });
 }
@@ -124,6 +172,10 @@ async function getData() {
         }),
     });
 
+    if (!res.ok) {
+        throw new Error('Error fetching data');
+    }
+
     const dbData = await res.json();
     const table = createTable(dbData);
     data.innerHTML = '';
@@ -131,23 +183,47 @@ async function getData() {
     addDeleteEventListener();
 }
 
-btnRefresh.addEventListener('click', getData);
+btnRefresh.addEventListener('click', async () => {
+    btnRefresh.classList.add('is-loading');
+    try {
+        await getData();
+        toast('Refreshed');
+    } catch (error) {
+        toast(error.message, true);
+    } finally {
+        btnRefresh.classList.remove('is-loading');
+    }
+});
 
 btnAdd.addEventListener('click', async () => {
+    btnAdd.classList.add('is-loading');
     const value = inputData.value;
-    await fetch(`http://${serverIp}:${serverPort}/cmd`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            cmd: `
-                await db('data')
-                    .returning(['id', 'data'])
-                    .insert({data: '${value}'});
-            `,
-        }),
-    });
+    try {
+        const res = await fetch(`http://${serverIp}:${serverPort}/cmd`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                cmd: `
+                    await db('data')
+                        .returning(['id', 'data'])
+                        .insert({data: '${value}'});
+                `,
+            }),
+        });
 
-    await getData();
+        if (!res.ok) {
+            throw new Error('Error adding data');
+        }
+
+        await getData();
+
+        toast(`Added: ${value}`);
+        inputData.value = '';
+    } catch (error) {
+        toast(error.message, true);
+    } finally {
+        btnAdd.classList.remove('is-loading');
+    }
 });
