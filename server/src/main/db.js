@@ -18,3 +18,5 @@ db.schema.hasTable('data').then(function (exists) {
 });
 
 export default db;
+
+

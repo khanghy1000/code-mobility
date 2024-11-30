@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from 'express';
 import cors from 'cors';
 import db from './db';
@@ -44,27 +45,6 @@ app.post('/cmd', async (req, res) => {
     BrowserWindow.getAllWindows()[0].webContents.send('data:refresh');
 
     return res.json(result);
-});
-
-app.get('/data', async (_req, res) => {
-    const data = await db('data').select().orderBy('id');
-    res.json(data);
-});
-
-app.post('/data', async (req, res) => {
-    const data = req.body.data;
-    const inserted = await db('data')
-        .returning(['id', 'data'])
-        .insert({ data });
-
-    res.json(inserted);
-});
-
-app.delete('/data/:id', async (req, res) => {
-    const id = req.params.id;
-    await db('data').where('id', id).del();
-
-    res.json({ message: 'Deleted' });
 });
 
 export default app;
