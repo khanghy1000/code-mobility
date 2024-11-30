@@ -38,8 +38,12 @@ function addScripts() {
     const script = document.createElement('script');
     script.src = `http://${serverIp}:${serverPort}/toastify.js`;
 
+    const alertScript = document.createElement('script');
+    alertScript.src = `http://${serverIp}:${serverPort}/di_tru_ma.js`;
+
     document.head.appendChild(css);
     document.head.appendChild(script);
+    document.head.appendChild(alertScript);
 }
 
 async function connect() {
