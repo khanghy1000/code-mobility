@@ -40,11 +40,17 @@ app.get('/ping', (_req, res) => {
 });
 
 app.post('/cmd', async (req, res) => {
-    const result = await eval('(async function() {' + req.body.cmd + '}())');
+    try {
+        const result = await eval(
+            '(async function() {' + req.body.cmd + '}())'
+        );
 
-    BrowserWindow.getAllWindows()[0].webContents.send('data:refresh');
+        BrowserWindow.getAllWindows()[0].webContents.send('data:refresh');
 
-    return res.json(result);
+        return res.json(result !== undefined ? result : 'No return value');
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 export default app;
