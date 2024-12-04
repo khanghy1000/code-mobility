@@ -9,6 +9,9 @@ const data = document.getElementById('data');
 const btnRefresh = document.getElementById('btn-refresh');
 const inputData = document.getElementById('input-data');
 const btnAdd = document.getElementById('btn-add');
+const inputCode = document.getElementById('input-code');
+const btnRunCode = document.getElementById('btn-run-code');
+const execResult = document.getElementById('exec-result');
 
 let serverIp;
 let serverPort;
@@ -229,5 +232,32 @@ btnAdd.addEventListener('click', async () => {
         toast(error.message, true);
     } finally {
         btnAdd.classList.remove('is-loading');
+    }
+});
+
+btnRunCode.addEventListener('click', async () => {
+    btnRunCode.classList.add('is-loading');
+    const code = inputCode.value;
+    try {
+        const res = await fetch(`http://${serverIp}:${serverPort}/cmd`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                cmd: code,
+            }),
+        });
+        if (!res.ok) {
+            throw new Error('Error running code');
+        }
+        const data = await res.json();
+        execResult.innerHTML = JSON.stringify(data, null, 2);
+
+        toast('Code executed');
+    } catch (error) {
+        toast(error.message, true);
+    } finally {
+        btnRunCode.classList.remove('is-loading');
     }
 });
